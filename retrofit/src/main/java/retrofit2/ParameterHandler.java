@@ -121,6 +121,14 @@ abstract class ParameterHandler<T> {
     }
   }
 
+  static final class Tag<T> extends ParameterHandler<T> {
+
+    @Override
+    void apply(RequestBuilder builder, @Nullable T value) throws IOException {
+      builder.requestBuilder.tag(value);
+    }
+  }
+
   static final class QueryName<T> extends ParameterHandler<T> {
     private final Converter<T, String> nameConverter;
     private final boolean encoded;

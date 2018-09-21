@@ -33,7 +33,7 @@ final class OkHttpCall<T> implements Call<T> {
   private final RequestFactory requestFactory;
   private final @Nullable Object[] args;
   private final okhttp3.Call.Factory callFactory;
-  private final Converter<ResponseBody, T> responseConverter;
+  private final Converter<okhttp3.Response, T> responseConverter;
 
   private volatile boolean canceled;
 
@@ -45,7 +45,7 @@ final class OkHttpCall<T> implements Call<T> {
   private boolean executed;
 
   OkHttpCall(RequestFactory requestFactory, @Nullable Object[] args,
-      okhttp3.Call.Factory callFactory, Converter<ResponseBody, T> responseConverter) {
+      okhttp3.Call.Factory callFactory, Converter<okhttp3.Response, T> responseConverter) {
     this.requestFactory = requestFactory;
     this.args = args;
     this.callFactory = callFactory;
@@ -195,6 +195,7 @@ final class OkHttpCall<T> implements Call<T> {
   }
 
   Response<T> parseResponse(okhttp3.Response rawResponse) throws IOException {
+    okhttp3.Response realResponse = rawResponse;
     ResponseBody rawBody = rawResponse.body();
 
     // Remove the body's source (the only stateful object) so we can pass the response along.
@@ -220,7 +221,7 @@ final class OkHttpCall<T> implements Call<T> {
 
     ExceptionCatchingResponseBody catchingBody = new ExceptionCatchingResponseBody(rawBody);
     try {
-      T body = responseConverter.convert(catchingBody);
+      T body = responseConverter.convert(realResponse);
       return Response.success(body, rawResponse);
     } catch (RuntimeException e) {
       // If the underlying source threw an exception, propagate that rather than indicating it was

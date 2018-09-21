@@ -34,7 +34,7 @@ final class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<ReturnT>
       Retrofit retrofit, Method method, RequestFactory requestFactory) {
     CallAdapter<ResponseT, ReturnT> callAdapter = createCallAdapter(retrofit, method);
     Type responseType = callAdapter.responseType();
-    if (responseType == Response.class || responseType == okhttp3.Response.class) {
+    if (responseType == Response.class || responseType == okhttp3.ResponseBody.class) {
       throw methodError(method, "'"
           + Utils.getRawType(responseType).getName()
           + "' is not a valid response body type. Did you mean ResponseBody?");
@@ -43,7 +43,7 @@ final class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<ReturnT>
       throw methodError(method, "HEAD method must use Void as response type.");
     }
 
-    Converter<ResponseBody, ResponseT> responseConverter =
+    Converter<okhttp3.Response, ResponseT> responseConverter =
         createResponseConverter(retrofit, method, responseType);
 
     okhttp3.Call.Factory callFactory = retrofit.callFactory;
@@ -62,7 +62,7 @@ final class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<ReturnT>
     }
   }
 
-  private static <ResponseT> Converter<ResponseBody, ResponseT> createResponseConverter(
+  private static <ResponseT> Converter<okhttp3.Response, ResponseT> createResponseConverter(
       Retrofit retrofit, Method method, Type responseType) {
     Annotation[] annotations = method.getAnnotations();
     try {
@@ -75,11 +75,11 @@ final class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<ReturnT>
   private final RequestFactory requestFactory;
   private final okhttp3.Call.Factory callFactory;
   private final CallAdapter<ResponseT, ReturnT> callAdapter;
-  private final Converter<ResponseBody, ResponseT> responseConverter;
+  private final Converter<okhttp3.Response, ResponseT> responseConverter;
 
   private HttpServiceMethod(RequestFactory requestFactory, okhttp3.Call.Factory callFactory,
       CallAdapter<ResponseT, ReturnT> callAdapter,
-      Converter<ResponseBody, ResponseT> responseConverter) {
+      Converter<okhttp3.Response, ResponseT> responseConverter) {
     this.requestFactory = requestFactory;
     this.callFactory = callFactory;
     this.callAdapter = callAdapter;

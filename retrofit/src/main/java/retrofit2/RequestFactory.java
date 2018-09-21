@@ -32,28 +32,7 @@ import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.http.Body;
-import retrofit2.http.DELETE;
-import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
-import retrofit2.http.HEAD;
-import retrofit2.http.HTTP;
-import retrofit2.http.Header;
-import retrofit2.http.HeaderMap;
-import retrofit2.http.Multipart;
-import retrofit2.http.OPTIONS;
-import retrofit2.http.PATCH;
-import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Part;
-import retrofit2.http.PartMap;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
-import retrofit2.http.QueryName;
-import retrofit2.http.Url;
+import retrofit2.http.*;
 
 import static retrofit2.Utils.methodError;
 import static retrofit2.Utils.parameterError;
@@ -399,7 +378,12 @@ final class RequestFactory {
           return new ParameterHandler.Query<>(name, converter, encoded);
         }
 
-      } else if (annotation instanceof QueryName) {
+      }else if (annotation instanceof RequestTag) {
+
+        //给Request 添加tag
+        return new ParameterHandler.Tag<>();
+
+      }  else if (annotation instanceof QueryName) {
         validateResolvableType(p, type);
         QueryName query = (QueryName) annotation;
         boolean encoded = query.encoded();

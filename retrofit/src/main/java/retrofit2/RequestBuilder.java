@@ -38,7 +38,7 @@ final class RequestBuilder {
   private @Nullable String relativeUrl;
   private @Nullable HttpUrl.Builder urlBuilder;
 
-  private final Request.Builder requestBuilder;
+  final Request.Builder requestBuilder;
   private @Nullable MediaType contentType;
 
   private final boolean hasBody;

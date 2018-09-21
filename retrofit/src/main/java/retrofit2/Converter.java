@@ -21,7 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import javax.annotation.Nullable;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
@@ -49,7 +48,7 @@ public interface Converter<F, T> {
      * response types such as {@code SimpleResponse} from a {@code Call<SimpleResponse>}
      * declaration.
      */
-    public @Nullable Converter<ResponseBody, ?> responseBodyConverter(Type type,
+    public @Nullable Converter<okhttp3.Response, ?> responseBodyConverter(Type type,
         Annotation[] annotations, Retrofit retrofit) {
       return null;
     }

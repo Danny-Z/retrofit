@@ -28,7 +28,9 @@ import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
@@ -306,7 +308,7 @@ public final class Retrofit {
    *
    * @throws IllegalArgumentException if no converter available for {@code type}.
    */
-  public <T> Converter<ResponseBody, T> responseBodyConverter(Type type, Annotation[] annotations) {
+  public <T> Converter<Response, T> responseBodyConverter(Type type, Annotation[] annotations) {
     return nextResponseBodyConverter(null, type, annotations);
   }
 
@@ -316,18 +318,18 @@ public final class Retrofit {
    *
    * @throws IllegalArgumentException if no converter available for {@code type}.
    */
-  public <T> Converter<ResponseBody, T> nextResponseBodyConverter(
+  public <T> Converter<Response, T> nextResponseBodyConverter(
       @Nullable Converter.Factory skipPast, Type type, Annotation[] annotations) {
     checkNotNull(type, "type == null");
     checkNotNull(annotations, "annotations == null");
 
     int start = converterFactories.indexOf(skipPast) + 1;
     for (int i = start, count = converterFactories.size(); i < count; i++) {
-      Converter<ResponseBody, ?> converter =
+      Converter<Response, ?> converter =
           converterFactories.get(i).responseBodyConverter(type, annotations, this);
       if (converter != null) {
         //noinspection unchecked
-        return (Converter<ResponseBody, T>) converter;
+        return (Converter<Response, T>) converter;
       }
     }
 

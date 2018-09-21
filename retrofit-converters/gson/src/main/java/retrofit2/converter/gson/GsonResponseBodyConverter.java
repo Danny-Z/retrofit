@@ -24,7 +24,7 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
-final class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T> {
+final class GsonResponseBodyConverter<T> implements Converter<okhttp3.Response, T> {
   private final Gson gson;
   private final TypeAdapter<T> adapter;
 
@@ -33,8 +33,8 @@ final class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T> {
     this.adapter = adapter;
   }
 
-  @Override public T convert(ResponseBody value) throws IOException {
-    JsonReader jsonReader = gson.newJsonReader(value.charStream());
+  @Override public T convert(okhttp3.Response value) throws IOException {
+    JsonReader jsonReader = gson.newJsonReader(value.body().charStream());
     try {
       T result = adapter.read(jsonReader);
       if (jsonReader.peek() != JsonToken.END_DOCUMENT) {
